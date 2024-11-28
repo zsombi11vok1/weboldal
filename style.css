@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+body {
+    background-color: black;
+}
+
+h1 {
+    color: blueviolet;
+    text-shadow: 0 0 20px blueviolet;
+    font-size: 3rem;
+}
+
+button {
+    background-color: blueviolet;
+    border: solid blueviolet 5px;
+    padding: 10px;
+    border-radius: 30px;
+    transition: all 0.2s ease-in-out;
+    margin: 10px;
+    box-shadow: 0 0 20px blueviolet;
+    width: 100px;
+}
+
+button:hover {
+    border: solid rgb(103, 11, 189) 5px;
+    transform: translateY(-5px);
+}
+
+.opacity-transition {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom left, rgba(0, 255, 0, 1), rgba(0, 0, 255, 1));
+}
+
+.container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.item {
+    position: absolute;
+    opacity: 0.1;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(to bottom left, rgb(255, 0, 255), rgb(13, 207, 255));
+    border-radius: 5px;
+    animation: float infinite 4s ease-in-out;
+}
+
+.itemthing1 { top: 7%; left: 20%; animation-delay: 0s; }
+.itemthing2 { top: 17%; left: 50%; animation-delay: 0.2s; }
+.itemthing3 { top: 50%; left: 10%; animation-delay: 0.4s; }
+.itemthing4 { top: 70%; left: 40%; animation-delay: 0.6s; }
+.itemthing5 { top: 10%; left: 70%; animation-delay: 0.8s; }
+.itemthing6 { top: 80%; left: 20%; animation-delay: 1s; }
+.itemthing7 { top: 60%; left: 80%; animation-delay: 1.2s; }
+.itemthing8 { top: 40%; left: 30%; animation-delay: 1.4s; }
+.itemthing9 { top: 90%; left: 50%; animation-delay: 1.6s; }
+.itemthing10 { top: 50%; left: 60%; animation-delay: 1.8s; }
+
+.main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.452);
+    box-shadow: 0px 0px 30px rgb(0, 0, 0);
+    backdrop-filter: blur(50px);
+    padding-block: 20px;
+    padding-inline: 20px;
+    text-align: center;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap; /* Gombok új sorba kerülése, ha szűk a hely */
+}
+
+.sign {
+    font-size: xx-small;
+}
+
+@keyframes slide-in {
+    0% {
+        opacity: 0; /* Kezdetben átlátszó */
+        transform: translateY(20px); /* Alulról jön */
+    }
+    100% {
+        opacity: 1; /* Teljesen látható */
+        transform: translateY(0); /* Visszatér a normál pozícióba */
+    }
+}
+
+/* Alapértelmezett animációs osztály a szövegekhez és gombokhoz */
+.animate {
+    animation: slide-in 0.5s ease forwards; /* Az animáció */
+}
+
+
+@keyframes float {
+    0% {transform: translateY(0); }
+    25% {transform: translateY(20px); }
+    50% {transform: translateX(10px);}
+    100% {transform: translateY(0); }
+}
+
+/* Mobil nézet stílusok */
+@media screen and (max-width: 600px) {
+    h1 {
+        font-size: 2.5rem; /* Kisebb betűméret, de nem túl kicsi */
+    }
+
+    button {
+        width: 100%; /* Gombok szélessége 100%-ra állítva */
+        font-size: 1rem; /* Gomb szövegméret */
+        margin: 5px 0; /* Kisebb margó a gombok között */
+    }
+
+    .main {
+        padding: 15px; /* Csökkentett padding */
+        width: 90%; /* A szélesség 90%-ra állítva, hogy kitöltse a képernyőt */
+        max-width: 600px; /* Maximális szélesség mobilon, hogy ne nyúljanak túl */
+        box-shadow: 0px 0px 15px rgb(0, 0, 0); /* A doboz árnyéka */
+    }
+
+    .sign {
+        font-size: small; /* Néhány kisebb betűméret */
+        margin-top: 10px; /* További margó a felirat alatt */
+    }
+}
