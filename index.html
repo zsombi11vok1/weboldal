@@ -1,40 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Zsombi11 | website</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menő Weboldal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #32CD32;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #ffffff;
+            background-color: #32CD32;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #28a428;
+            transform: scale(1.1);
+        }
+        .button:active {
+            transform: scale(0.95);
+        }
+        .animation-box {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #32CD32, #121212);
+            animation: moveBackground 3s infinite linear;
+        }
+        @keyframes moveBackground {
+            0% { background-position: 0%; }
+            100% { background-position: 100%; }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    button.style.boxShadow = "0 0 20px #32CD32";
+                });
+                button.addEventListener('mouseleave', () => {
+                    button.style.boxShadow = "none";
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-    <div class="opacity-transition">
-        <div class="container">
-            <!-- 10 darab elem, különböző itemthing osztályokkal -->
-            <div class="item itemthing1"></div>
-            <div class="item itemthing2"></div>
-            <div class="item itemthing3"></div>
-            <div class="item itemthing4"></div>
-            <div class="item itemthing5"></div>
-            <div class="item itemthing6"></div>
-            <div class="item itemthing7"></div>
-            <div class="item itemthing8"></div>
-            <div class="item itemthing9"></div>
-            <div class="item itemthing10"></div>
-        </div>
-        <div class="main">
-            <h1 class="animate">Zsombi11 weboldala</h1><br>
-            <p class="animate">Sziasztok vagyis csak szia...! Én Zsombi11 vagyok egy egyszerű TikTok streamer. Szeretek különleges dolgokat csinálni és sok különböző dolgot kipróbálni! A LIVE-okkal az a célom, hogy minnél több embernek elnyerje a tetszését és egy nagy közösséget építsek fel!
-                Ha gondolod csatlakozz discordra és ne felejtsd el, van egy anarchy szerveren is! Ott a gomb szóval mire vársz még?</p>
-            <br>
-            <div class="buttons animate">
-                <button onclick="window.open('https://discord.gg/4QKyccf5tG')">Discord</button>
-                <button onclick="window.open('https://www.tiktok.com/@zsombi.11')">TikTok</button>
-                <button onclick="window.open('https://www.youtube.com/@Zsombi_11')">YouTube</button>
-                <button onclick="window.open('https://ggplanet.hu')">GGPlanet</button>
-            </div>
-            <p class="sign animate">Zsombi11 Official Website @ webgg.net</p>
-        </div>
+    <h1>Üdvözöllek a Menő Weboldalon!</h1>
+    <div class="animation-box"></div>
+    <div class="container">
+        <a href="https://discord.com" target="_blank" class="button">Discord</a>
+        <a href="https://youtube.com" target="_blank" class="button">YouTube</a>
+        <a href="https://minecraft.net" target="_blank" class="button">Minecraft</a>
     </div>
 </body>
-<script src="script.js"></script>
 </html>
