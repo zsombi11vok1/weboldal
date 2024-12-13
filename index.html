@@ -17,6 +17,7 @@
             text-align: center;
             margin-top: 50px;
             color: #32CD32;
+            animation: fadeIn 2s ease-in-out;
         }
         .container {
             display: flex;
@@ -38,20 +39,43 @@
         }
         .button:hover {
             background-color: #28a428;
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(5deg);
         }
         .button:active {
-            transform: scale(0.95);
+            transform: scale(0.95) rotate(-5deg);
         }
         .animation-box {
             width: 100%;
             height: 200px;
             background: linear-gradient(90deg, #32CD32, #121212);
-            animation: moveBackground 3s infinite linear;
+            animation: gradientWave 4s infinite ease-in-out;
+            position: relative;
+            overflow: hidden;
         }
-        @keyframes moveBackground {
-            0% { background-position: 0%; }
-            100% { background-position: 100%; }
+        .animation-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(50, 205, 50, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: pulse 2s infinite;
+        }
+        @keyframes gradientWave {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         .content-section {
             max-width: 800px;
@@ -59,13 +83,18 @@
             padding: 20px;
             background-color: #1e1e1e;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(50, 205, 50, 0.5);
+            animation: slideIn 1.5s ease-out;
         }
         .content-section h2 {
             color: #32CD32;
         }
         .content-section p {
             line-height: 1.6;
+        }
+        @keyframes slideIn {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
     </style>
     <script>
@@ -78,6 +107,23 @@
                 button.addEventListener('mouseleave', () => {
                     button.style.boxShadow = "none";
                 });
+            });
+
+            const animationBox = document.querySelector('.animation-box');
+            animationBox.addEventListener('click', () => {
+                const newCircle = document.createElement('div');
+                newCircle.style.position = 'absolute';
+                newCircle.style.width = '50px';
+                newCircle.style.height = '50px';
+                newCircle.style.backgroundColor = '#32CD32';
+                newCircle.style.borderRadius = '50%';
+                newCircle.style.top = `${Math.random() * 100}%`;
+                newCircle.style.left = `${Math.random() * 100}%`;
+                newCircle.style.transform = 'translate(-50%, -50%)';
+                newCircle.style.animation = 'pulse 2s infinite';
+                animationBox.appendChild(newCircle);
+
+                setTimeout(() => newCircle.remove(), 2000);
             });
         });
     </script>
