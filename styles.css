@@ -1,48 +1,10 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #ffffff;
-    overflow-x: hidden;
+.content-section {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
-h1 {
-    text-align: center;
-    margin-top: 50px;
-    color: #32CD32;
-}
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    margin-top: 50px;
-}
-.button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    color: #ffffff;
-    background-color: #32CD32;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform 0.3s, background-color 0.3s;
-}
-.button:hover {
-    background-color: #28a428;
-    transform: scale(1.1);
-}
-.button:active {
-    transform: scale(0.95);
-}
-.animation-box {
-    width: 100%;
-    height: 200px;
-    background: linear-gradient(90deg, #32CD32, #121212);
-    animation: moveBackground 3s infinite linear;
-}
-@keyframes moveBackground {
-    0% { background-position: 0%; }
-    100% { background-position: 100%; }
+
+.content-section.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
