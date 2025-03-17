@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zsombi11</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('https://wallpaperaccess.com/full/724323.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container a {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin: 0 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .button-container a:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            width: 80%;
+            max-width: 900px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .box-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            position: relative;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        .box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .about {
+            margin-top: 50px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        /* Reszponzív dizájn */
+        @media (max-width: 768px) {
+            .main-content {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button-container a {
+                padding: 8px 15px;
+            }
+
+            .box {
+                width: 90%;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Zsombi11 Weboldala</h1>
+        <div class="button-container">
+            <a href="https://www.youtube.com/channel/UCucVLmFKs74gANR3zu83Mxg" target="_blank">YouTube</a>
+            <a href="https://discord.gg/AyXZGHYvCJ" target="_blank">Discord</a>
+            <a href="https://ggplanet.hu/" target="_blank">GGplanet</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="box-container">
+            <div class="box">Jövőbeli tervek: Szeretnék jobban a YouTube csatornámmal foglalkozni és ott is sikereket elérni!</div>
+            <div class="box">Videók: Folytatom a Minecraft videók gyártását és néha más játékokat is ki fogok próbálni.</div>
+            <div class="box">Minecraft: Szeretnék egy SMP-t létrehozni, de ez még nem fog megvalósulni! Ha szeretnétek ebben támogatni, csatlakozzatok Discord-ra!</div>
+        </div>
+        <div class="about">
+            <h2>Rólam</h2>
+            <p>Egy random ember vagyok, aki mindent ki akar próbálni. Minecraftozom, és videókat készítek. Szeretem a kihívásokat és a közösséget!</p>
+        </div>
+    </div>
+</body>
+</html>
