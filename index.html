@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zsombi11vok.hu</title>
+    <style>
+        :root {
+            --panel-background: rgba(18, 12, 28, 0.6);
+            --panel-border: rgba(255, 255, 255, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.6);
+            --bright-white: #ffffff;
+            --soft-white: #e0e0e0;
+            --accent-purple-bright: #c39fff;
+            --accent-purple-dark: #a275ff;
+            --aurora-color-1: rgba(162, 117, 255, 0.2);
+            --aurora-color-2: rgba(162, 117, 255, 0);
+            --discord-blue: #7289DA;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            background-color: #120c1c;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: var(--soft-white); margin: 0;
+            padding: 10vh 20px; min-height: 100vh;
+            display: flex; align-items: flex-start; justify-content: center;
+            perspective: 1500px; cursor: none;
+        }
+        
+        .background-container {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: -2;
+        }
+        #starfield-canvas, #aurora-canvas {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+
+        .custom-cursor {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 10000;
+            transition: transform 0.1s ease-out;
+        }
+        .cursor-dot { width: 6px; height: 6px; background-color: var(--accent-purple-bright); border-radius: 50%; }
+        .cursor-circle {
+            width: 30px; height: 30px; border: 1px solid var(--accent-purple-dark);
+            border-radius: 50%; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+        }
+        .custom-cursor.hover .cursor-circle { transform: translate(-50%, -50%) scale(1.6); opacity: 0.5; }
+
+        #page-content {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 30px; width: 100%; z-index: 1;
+        }
+        
+        .scroll-reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
+        
+        .glass-panel {
+            background: var(--panel-background);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 8px 40px 0 var(--shadow-color);
+            border-radius: 20px; padding: 30px; width: 90%;
+            max-width: 600px; transform-style: preserve-3d;
+            transition: transform 0.1s linear, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .header-panel {
+            display: flex; justify-content: center; align-items: center;
+            gap: 25px; padding: 15px 30px; border-radius: 50px; width: auto;
+        }
+        .social-link {
+            position: relative; display: flex; justify-content: center; align-items: center;
+            width: 40px; height: 40px;
+        }
+        .social-link svg {
+            width: 28px; height: 28px; fill: var(--soft-white);
+            transition: fill 0.3s ease-out, transform 0.3s ease-out;
+            z-index: 2;
+        }
+        .social-link::before {
+            content: ''; position: absolute;
+            width: 100%; height: 100%; border-radius: 50%;
+            background: var(--accent-purple-dark);
+            opacity: 0; transform: scale(0.5);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1;
+        }
+        .social-link:hover svg { transform: scale(1.1); fill: var(--bright-white); }
+        .social-link:hover::before { transform: scale(1); opacity: 0.5; filter: blur(10px); }
+
+        .content-panel h2 { margin: 0 0 20px 0; text-align: center; font-size: 2.2em; font-weight: 700; }
+        .animated-gradient {
+            background-image: linear-gradient(90deg, var(--soft-white), var(--bright-white), var(--accent-purple-bright), var(--soft-white));
+            background-size: 200% auto; color: #000;
+            background-clip: text; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-flow 4s linear infinite;
+        }
+        @keyframes gradient-flow { to { background-position: 200% center; } }
+
+        .typewriter-container { line-height: 1.7; text-align: justify; color: var(--soft-white); }
+        .blinking-cursor {
+            font-weight: bold; color: var(--accent-purple-bright);
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        /* Új stílus a "Munkáim" szekció szövegéhez */
+        .wip-text {
+            text-align: center;
+            line-height: 1.8;
+            font-size: 1.05em;
+            padding: 10px 0;
+        }
+        .inline-link {
+            color: var(--discord-blue);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .inline-link:hover {
+            color: #9ab0f1;
+            text-decoration: underline;
+        }
+
+        .footer-panel { text-align: center; }
+        .footer-panel .social-links-container {
+            display: flex; justify-content: center; gap: 15px; margin-top: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="background-container">
+        <canvas id="starfield-canvas"></canvas>
+        <canvas id="aurora-canvas"></canvas>
+    </div>
+
+    <div class="custom-cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-circle"></div>
+    </div>
+
+    <div id="page-content">
+        <header class="glass-panel header-panel scroll-reveal">
+            <a href="https://www.youtube.com/@zsombi11vok" target="_blank" title="YouTube" class="social-link"><svg viewBox="0 0 576 512"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg></a>
+            <a href="https://www.tiktok.com/@zsombi11vok" target="_blank" title="TikTok" class="social-link"><svg viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg></a>
+            <a href="https://discord.gg/HbTypMTjsU" target="_blank" title="Discord" class="social-link"><svg viewBox="0 0 640 512"><path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.246,69.13a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918a1.9,1.9,0,0,0,2.063-.676A348.2,348.2,0,0,0,208.12,430.4a1.86,1.86,0,0,0-1.019-2.588,321.173,321.173,0,0,1-45.868-21.853,1.885,1.885,0,0,1-.185-3.126c3.082-2.309,6.166-4.711,9.109-7.137a1.819,1.819,0,0,1,1.9-.256c96.229,43.917,200.41,43.917,295.5,0a1.812,1.812,0,0,1,1.924.233c2.944,2.426,6.027,4.851,9.132,7.16a1.884,1.884,0,0,1-.162,3.126,301.407,301.407,0,0,1-45.89,21.83,1.875,1.875,0,0,0-1,2.611,391.055,391.055,0,0,0,30.014,48.815,1.864,1.864,0,0,0,2.063.7A486.048,486.048,0,0,0,610.7,405.729a1.882,1.882,0,0,0,.765-1.352C623.729,277.594,600.95,167.242,524.531,69.836ZM222.491,337.58c-28.972,0-52.844-26.587-52.844-59.239S193.056,219.1,222.491,219.1c29.665,0,53.306,26.82,52.844,59.239C275.334,310.993,251.924,337.58,222.491,337.58Zm195.38,0c-28.971,0-52.843-26.587-52.843-59.239S388.437,219.1,417.871,219.1c29.667,0,53.307,26.82,52.845,59.239C470.715,310.993,447.538,337.58,417.871,337.58Z"/></svg></a>
+        </header>
+
+        <section class="glass-panel content-panel scroll-reveal">
+            <h2><span class="animated-gradient">Rólam</span></h2>
+            <p id="typewriter" class="typewriter-container"></p>
+        </section>
+
+        <!-- 2. KÉRÉS: Munkáim szekció frissítése -->
+        <section class="glass-panel content-panel scroll-reveal">
+            <h2><span class="animated-gradient">Munkáim</span></h2>
+            <p class="wip-text">
+                Ez a szekció jelenleg fejlesztés alatt áll. A legfrissebb projekteket és munkáimat addig is a <a href="https://discord.gg/HbTypMTjsU" target="_blank" class="inline-link">Discord szerveremen</a> találod meg!
+            </p>
+        </section>
+        
+        <!-- 1. KÉRÉS: Copyright dátum frissítése 2025-re -->
+        <footer class="glass-panel footer-panel scroll-reveal">
+            <p>&copy; 2025 Zsombi11vok | Kövess máshol is!</p>
+            <div class="social-links-container">
+                <!-- A JS tölti fel tartalommal -->
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setupStarfield();
+            setupAurora();
+            setupCustomCursor();
+            setupPanelTilt();
+            setupScrollAnimations();
+            setupTypewriter();
+
+            const headerLinks = document.querySelector('.header-panel').innerHTML;
+            document.querySelector('.footer-panel .social-links-container').innerHTML = headerLinks;
+        });
+
+        function setupTypewriter() {
+            const el = document.getElementById('typewriter');
+            const text = "Sziasztok! Zsombi vagyok, egy hobbi streamer és videós, akinek a célja egy jó közösség építése. Rengeteg játékkal játszottam, de a Minecraft az, ami igazán le tud kötni, és amiről a legtöbb videót készítem.";
+            let i = 0;
+            el.innerHTML = '<span class="blinking-cursor">|</span>';
+            const cursor = el.querySelector('.blinking-cursor');
+
+            function type() {
+                if (i < text.length) {
+                    cursor.insertAdjacentText('beforebegin', text.charAt(i));
+                    i++;
+                    setTimeout(type, 25); // Gépelési sebesség
+                } else {
+                    cursor.style.animation = 'none';
+                    cursor.style.opacity = '0';
+                }
+            }
+            setTimeout(type, 1000);
+        }
+
+        // A többi, változatlan JS függvény...
+        function setupStarfield() { const canvas = document.getElementById('starfield-canvas'); const ctx = canvas.getContext('2d'); let stars = []; let scrollY = 0; function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = []; for (let i = 0; i < 200; i++) { stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.2, opacity: Math.random(), speed: 0.1 + Math.random() * 0.4 }); } } window.addEventListener('resize', resizeCanvas); document.addEventListener('scroll', () => { scrollY = window.scrollY; }); function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(star => { const yPos = (star.y - scrollY * star.speed) % canvas.height; const y = yPos < 0 ? yPos + canvas.height : yPos; ctx.beginPath(); ctx.arc(star.x, y, star.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(224, 224, 224, ${star.opacity})`; ctx.fill(); }); requestAnimationFrame(animate); } resizeCanvas(); animate(); }
+        function setupAurora() { const canvas = document.getElementById('aurora-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let mouse = { x: canvas.width / 2, y: canvas.height / 2 }; window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }); window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }); const rootStyles = getComputedStyle(document.documentElement); const color1 = rootStyles.getPropertyValue('--aurora-color-1').trim(); const color2 = rootStyles.getPropertyValue('--aurora-color-2').trim(); function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, Math.max(canvas.width, canvas.height) / 4); gradient.addColorStop(0, color1); gradient.addColorStop(1, color2); ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height); requestAnimationFrame(animate); } animate(); }
+        function setupCustomCursor() { const cursor = document.querySelector('.custom-cursor'); window.addEventListener('mousemove', (e) => { cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; }); const interactiveElements = document.querySelectorAll('a, button, .project-card, .social-link'); interactiveElements.forEach(el => { el.addEventListener('mouseenter', () => cursor.classList.add('hover')); el.addEventListener('mouseleave', () => cursor.classList.remove('hover')); }); }
+        function setupScrollAnimations() { const scrollElements = document.querySelectorAll('.scroll-reveal'); if (!('IntersectionObserver' in window)) return; const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 }); scrollElements.forEach(el => observer.observe(el)); }
+        function setupPanelTilt() { const panels = document.querySelectorAll('.glass-panel'); if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return; const maxTilt = 10; panels.forEach(panel => { panel.addEventListener('mousemove', (e) => { const rect = panel.getBoundingClientRect(); const rotateX = ((e.clientY - rect.top) / rect.height - 0.5) * -maxTilt * 2; const rotateY = ((e.clientX - rect.left) / rect.width - 0.5) * maxTilt * 2; panel.style.transition = 'transform 0.1s linear'; panel.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`; }); panel.addEventListener('mouseleave', () => { panel.style.transition = 'transform 0.5s ease-out'; panel.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)'; }); }); }
+    </script>
+</body>
+</html>
