@@ -41,7 +41,8 @@
         .custom-cursor {
             position: fixed; top: 0; left: 0;
             pointer-events: none; z-index: 10000;
-            transition: transform 0.1s ease-out;
+            /* MÓDOSÍTÁS: opacity átmenet hozzáadva a finom eltűnéshez */
+            transition: transform 0.1s ease-out, opacity 0.3s ease-out;
         }
         .cursor-dot { width: 6px; height: 6px; background-color: var(--accent-purple-bright); border-radius: 50%; }
         .cursor-circle {
@@ -114,7 +115,6 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
         
-        /* Új stílus a "Munkáim" szekció szövegéhez */
         .wip-text {
             text-align: center;
             line-height: 1.8;
@@ -163,7 +163,6 @@
             <p id="typewriter" class="typewriter-container"></p>
         </section>
 
-        <!-- 2. KÉRÉS: Munkáim szekció frissítése -->
         <section class="glass-panel content-panel scroll-reveal">
             <h2><span class="animated-gradient">Munkáim</span></h2>
             <p class="wip-text">
@@ -171,11 +170,9 @@
             </p>
         </section>
         
-        <!-- 1. KÉRÉS: Copyright dátum frissítése 2025-re -->
         <footer class="glass-panel footer-panel scroll-reveal">
             <p>&copy; 2025 Zsombi11vok | Kövess máshol is!</p>
             <div class="social-links-container">
-                <!-- A JS tölti fel tartalommal -->
             </div>
         </footer>
     </div>
@@ -204,7 +201,7 @@
                 if (i < text.length) {
                     cursor.insertAdjacentText('beforebegin', text.charAt(i));
                     i++;
-                    setTimeout(type, 25); // Gépelési sebesség
+                    setTimeout(type, 25);
                 } else {
                     cursor.style.animation = 'none';
                     cursor.style.opacity = '0';
@@ -213,10 +210,34 @@
             setTimeout(type, 1000);
         }
 
+        // MÓDOSÍTOTT FÜGGVÉNY
+        function setupCustomCursor() {
+            const cursor = document.querySelector('.custom-cursor');
+
+            window.addEventListener('mousemove', (e) => {
+                cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            });
+
+            const interactiveElements = document.querySelectorAll('a, button, .project-card, .social-link');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+
+            // ÚJ RÉSZ: Kurzor elrejtése, ha az egér elhagyja az ablakot
+            document.documentElement.addEventListener('mouseleave', () => {
+                cursor.style.opacity = '0';
+            });
+
+            // ÚJ RÉSZ: Kurzor megjelenítése, ha az egér visszatér az ablakba
+            document.documentElement.addEventListener('mouseenter', () => {
+                cursor.style.opacity = '1';
+            });
+        }
+        
         // A többi, változatlan JS függvény...
         function setupStarfield() { const canvas = document.getElementById('starfield-canvas'); const ctx = canvas.getContext('2d'); let stars = []; let scrollY = 0; function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = []; for (let i = 0; i < 200; i++) { stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.2, opacity: Math.random(), speed: 0.1 + Math.random() * 0.4 }); } } window.addEventListener('resize', resizeCanvas); document.addEventListener('scroll', () => { scrollY = window.scrollY; }); function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(star => { const yPos = (star.y - scrollY * star.speed) % canvas.height; const y = yPos < 0 ? yPos + canvas.height : yPos; ctx.beginPath(); ctx.arc(star.x, y, star.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(224, 224, 224, ${star.opacity})`; ctx.fill(); }); requestAnimationFrame(animate); } resizeCanvas(); animate(); }
         function setupAurora() { const canvas = document.getElementById('aurora-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let mouse = { x: canvas.width / 2, y: canvas.height / 2 }; window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }); window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }); const rootStyles = getComputedStyle(document.documentElement); const color1 = rootStyles.getPropertyValue('--aurora-color-1').trim(); const color2 = rootStyles.getPropertyValue('--aurora-color-2').trim(); function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, Math.max(canvas.width, canvas.height) / 4); gradient.addColorStop(0, color1); gradient.addColorStop(1, color2); ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height); requestAnimationFrame(animate); } animate(); }
-        function setupCustomCursor() { const cursor = document.querySelector('.custom-cursor'); window.addEventListener('mousemove', (e) => { cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; }); const interactiveElements = document.querySelectorAll('a, button, .project-card, .social-link'); interactiveElements.forEach(el => { el.addEventListener('mouseenter', () => cursor.classList.add('hover')); el.addEventListener('mouseleave', () => cursor.classList.remove('hover')); }); }
         function setupScrollAnimations() { const scrollElements = document.querySelectorAll('.scroll-reveal'); if (!('IntersectionObserver' in window)) return; const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 }); scrollElements.forEach(el => observer.observe(el)); }
         function setupPanelTilt() { const panels = document.querySelectorAll('.glass-panel'); if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return; const maxTilt = 10; panels.forEach(panel => { panel.addEventListener('mousemove', (e) => { const rect = panel.getBoundingClientRect(); const rotateX = ((e.clientY - rect.top) / rect.height - 0.5) * -maxTilt * 2; const rotateY = ((e.clientX - rect.left) / rect.width - 0.5) * maxTilt * 2; panel.style.transition = 'transform 0.1s linear'; panel.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`; }); panel.addEventListener('mouseleave', () => { panel.style.transition = 'transform 0.5s ease-out'; panel.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)'; }); }); }
     </script>
