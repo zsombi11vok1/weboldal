@@ -41,7 +41,6 @@
         .custom-cursor {
             position: fixed; top: 0; left: 0;
             pointer-events: none; z-index: 10000;
-            /* MÓDOSÍTÁS: opacity átmenet hozzáadva a finom eltűnéshez */
             transition: transform 0.1s ease-out, opacity 0.3s ease-out;
         }
         .cursor-dot { width: 6px; height: 6px; background-color: var(--accent-purple-bright); border-radius: 50%; }
@@ -210,7 +209,7 @@
             setTimeout(type, 1000);
         }
 
-        // MÓDOSÍTOTT FÜGGVÉNY
+        // --- JAVÍTOTT FÜGGVÉNY ---
         function setupCustomCursor() {
             const cursor = document.querySelector('.custom-cursor');
 
@@ -218,18 +217,31 @@
                 cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
             });
 
-            const interactiveElements = document.querySelectorAll('a, button, .project-card, .social-link');
+            // Győződj meg róla, hogy minden kattintható elem szerepel itt
+            const interactiveElements = document.querySelectorAll('a, button, .inline-link, .social-link');
+            
             interactiveElements.forEach(el => {
+                // Hover effektusok
                 el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
                 el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+
+                // Kurzor elrejtése kattintáskor (gomb lenyomásakor)
+                el.addEventListener('mousedown', () => {
+                    cursor.style.opacity = '0';
+                });
+
+                // Kurzor megjelenítése a kattintás után (gomb felengedésekor)
+                el.addEventListener('mouseup', () => {
+                    cursor.style.opacity = '1';
+                });
             });
 
-            // ÚJ RÉSZ: Kurzor elrejtése, ha az egér elhagyja az ablakot
+            // Kurzor elrejtése, ha az egér elhagyja az ablakot
             document.documentElement.addEventListener('mouseleave', () => {
                 cursor.style.opacity = '0';
             });
 
-            // ÚJ RÉSZ: Kurzor megjelenítése, ha az egér visszatér az ablakba
+            // Kurzor megjelenítése, ha az egér visszatér az ablakba
             document.documentElement.addEventListener('mouseenter', () => {
                 cursor.style.opacity = '1';
             });
