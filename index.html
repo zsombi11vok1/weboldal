@@ -1,162 +1,208 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zsombi11vok.hu</title>
-    <style>
-        :root {
-            --panel-background: rgba(18, 12, 28, 0.6);
-            --panel-border: rgba(255, 255, 255, 0.15);
-            --shadow-color: rgba(0, 0, 0, 0.6);
-            --bright-white: #ffffff;
-            --soft-white: #e0e0e0;
-            --accent-purple-bright: #c39fff;
-            --accent-purple-dark: #a275ff;
-            --aurora-color-1: rgba(162, 117, 255, 0.2);
-            --aurora-color-2: rgba(162, 117, 255, 0);
-            --discord-blue: #7289DA;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zsombi11vok.hu</title>
+  <style>
+    :root {
+      --panel-background: rgba(18, 12, 28, 0.6);
+      --panel-border: rgba(255, 255, 255, 0.15);
+      --shadow-color: rgba(0, 0, 0, 0.6);
+      --bright-white: #ffffff;
+      --soft-white: #e0e0e0;
+      --accent-purple-bright: #c39fff;
+      --accent-purple-dark: #a275ff;
+      --aurora-color-1: rgba(162, 117, 255, 0.2);
+      --aurora-color-2: rgba(162, 117, 255, 0);
+      --discord-blue: #7289DA;
+    }
 
-        *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; }
 
-        body {
-            background-color: #120c1c;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-            color: var(--soft-white); margin: 0;
-            padding: 10vh 20px; min-height: 100vh;
-            display: flex; align-items: flex-start; justify-content: center;
-            perspective: 1500px; cursor: none;
-        }
+    body {
+      background-color: #120c1c;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--soft-white); margin: 0;
+      padding: 10vh 20px; min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      perspective: 1500px; cursor: none;
+    }
 
-        /* <<< FIX: minden kattintható elemnél is tiltsuk a natív kurzort */
-        a, button, .inline-link, .social-link {
-            cursor: none !important;
-        }
-        
-        .background-container {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: -2;
-        }
-        #starfield-canvas, #aurora-canvas {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
+    a, button, .inline-link, .social-link {
+      cursor: none !important;
+    }
 
-        .custom-cursor {
-            position: fixed; top: 0; left: 0;
-            pointer-events: none; z-index: 10000;
-            transition: transform 0.1s ease-out, opacity 0.3s ease-out;
-        }
-        .cursor-dot { width: 6px; height: 6px; background-color: var(--accent-purple-bright); border-radius: 50%; }
-        .cursor-circle {
-            width: 30px; height: 30px; border: 1px solid var(--accent-purple-dark);
-            border-radius: 50%; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-        }
-        .custom-cursor.hover .cursor-circle { transform: translate(-50%, -50%) scale(1.6); opacity: 0.5; }
+    .background-container {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: -2;
+    }
+    #starfield-canvas, #aurora-canvas {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
 
-        #page-content {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 30px; width: 100%; z-index: 1;
-        }
-        
-        .scroll-reveal {
-            opacity: 0; transform: translateY(40px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
-        
-        .glass-panel {
-            background: var(--panel-background);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--panel-border);
-            box-shadow: 0 8px 40px 0 var(--shadow-color);
-            border-radius: 20px; padding: 30px; width: 90%;
-            max-width: 600px; transform-style: preserve-3d;
-            transition: transform 0.1s linear, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
+    .custom-cursor {
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 10000;
+      transition: transform 0.1s ease-out, opacity 0.3s ease-out;
+    }
+    .cursor-dot { width: 6px; height: 6px; background-color: var(--accent-purple-bright); border-radius: 50%; }
+    .cursor-circle {
+      width: 30px; height: 30px; border: 1px solid var(--accent-purple-dark);
+      border-radius: 50%; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    }
+    .custom-cursor.hover .cursor-circle { transform: translate(-50%, -50%) scale(1.6); opacity: 0.5; }
 
-        .header-panel {
-            display: flex; justify-content: center; align-items: center;
-            gap: 25px; padding: 15px 30px; border-radius: 50px; width: auto;
-        }
-        .social-link {
-            position: relative; display: flex; justify-content: center; align-items: center;
-            width: 40px; height: 40px;
-        }
-        .social-link svg {
-            width: 28px; height: 28px; fill: var(--soft-white);
-            transition: fill 0.3s ease-out, transform 0.3s ease-out;
-            z-index: 2;
-        }
-        .social-link::before {
-            content: ''; position: absolute;
-            width: 100%; height: 100%; border-radius: 50%;
-            background: var(--accent-purple-dark);
-            opacity: 0; transform: scale(0.5);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            z-index: 1;
-        }
-        .social-link:hover svg { transform: scale(1.1); fill: var(--bright-white); }
-        .social-link:hover::before { transform: scale(1); opacity: 0.5; filter: blur(10px); }
+    #page-content {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 30px; width: 100%; z-index: 1;
+    }
 
-        .content-panel h2 { margin: 0 0 20px 0; text-align: center; font-size: 2.2em; font-weight: 700; }
-        .animated-gradient {
-            background-image: linear-gradient(90deg, var(--soft-white), var(--bright-white), var(--accent-purple-bright), var(--soft-white));
-            background-size: 200% auto; color: #000;
-            background-clip: text; -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradient-flow 4s linear infinite;
-        }
-        @keyframes gradient-flow { to { background-position: 200% center; } }
+    .scroll-reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-        .typewriter-container { line-height: 1.7; text-align: justify; color: var(--soft-white); }
-        .blinking-cursor {
-            font-weight: bold; color: var(--accent-purple-bright);
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-        
-        .wip-text {
-            text-align: center;
-            line-height: 1.8;
-            font-size: 1.05em;
-            padding: 10px 0;
-        }
-        .inline-link {
-            color: var(--discord-blue);
-            font-weight: 600;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .inline-link:hover {
-            color: #9ab0f1;
-            text-decoration: underline;
-        }
+    .glass-panel {
+      background: var(--panel-background);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 8px 40px 0 var(--shadow-color);
+      border-radius: 20px; padding: 30px; width: 90%;
+      max-width: 600px; transform-style: preserve-3d;
+      transition: transform 0.1s linear, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
 
-        .footer-panel { text-align: center; }
-        .footer-panel .social-links-container {
-            display: flex; justify-content: center; gap: 15px; margin-top: 15px;
-        }
+    .header-panel {
+      display: flex; justify-content: center; align-items: center;
+      gap: 25px; padding: 15px 30px; border-radius: 50px; width: auto;
+    }
+    .social-link {
+      position: relative; display: flex; justify-content: center; align-items: center;
+      width: 40px; height: 40px;
+    }
+    .social-link svg {
+      width: 28px; height: 28px; fill: var(--soft-white);
+      transition: fill 0.3s ease-out, transform 0.3s ease-out;
+      z-index: 2;
+    }
+    .social-link::before {
+      content: ''; position: absolute;
+      width: 100%; height: 100%; border-radius: 50%;
+      background: var(--accent-purple-dark);
+      opacity: 0; transform: scale(0.5);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1;
+    }
+    .social-link:hover svg { transform: scale(1.1); fill: var(--bright-white); }
+    .social-link:hover::before { transform: scale(1); opacity: 0.5; filter: blur(10px); }
 
-    </style>
+    .content-panel h2 { margin: 0 0 20px 0; text-align: center; font-size: 2.2em; font-weight: 700; }
+    .animated-gradient {
+      background-image: linear-gradient(90deg, var(--soft-white), var(--bright-white), var(--accent-purple-bright), var(--soft-white));
+      background-size: 200% auto; color: #000;
+      background-clip: text; -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-flow 4s linear infinite;
+    }
+    @keyframes gradient-flow { to { background-position: 200% center; } }
+
+    .typewriter-container { line-height: 1.7; text-align: justify; color: var(--soft-white); }
+    .blinking-cursor {
+      font-weight: bold; color: var(--accent-purple-bright);
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .wip-text {
+      text-align: center;
+      line-height: 1.8;
+      font-size: 1.05em;
+      padding: 10px 0;
+    }
+    .inline-link {
+      color: var(--discord-blue);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .inline-link:hover {
+      color: #9ab0f1;
+      text-decoration: underline;
+    }
+
+    .footer-panel { text-align: center; }
+    .footer-panel .social-links-container {
+      display: flex; justify-content: center; gap: 15px; margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
-    
-    <div class="background-container">
-        <canvas id="starfield-canvas"></canvas>
-        <canvas id="aurora-canvas"></canvas>
-    </div>
 
-    <div class="custom-cursor">
-        <div class="cursor-dot"></div>
-        <div class="cursor-circle"></div>
-    </div>
+  <div class="background-container">
+    <canvas id="starfield-canvas"></canvas>
+    <canvas id="aurora-canvas"></canvas>
+  </div>
 
-    <div id="page-content">
-        <header class="glass-panel header-panel scroll-reveal">
-            <a href="https://www.youtube.com/@zsombi11vok" target="_blank" title="YouTube" class="social-link"><svg viewBox="0 0 576 512"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg></a>
-            <a href="https://www.tiktok.com/@zsombi11vok" target="_blank" title="TikTok" class="social-link"><svg viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg></a>
-            <a href="https://discord.gg/HbTypMTjsU" target="_blank" title="Discord" class="social-link"><svg viewBox="0 0 640 512"><path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.246,69.13a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918_
+  <div class="custom-cursor">
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+  </div>
+
+  <div id="page-content">
+    <header class="glass-panel header-panel scroll-reveal">
+      <a href="https://www.youtube.com/@zsombi11vok" target="_blank" title="YouTube" class="social-link">
+        <svg viewBox="0 0 576 512"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@zsombi11vok" target="_blank" title="TikTok" class="social-link">
+        <svg viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/></svg>
+      </a>
+      <a href="https://discord.gg/HbTypMTjsU" target="_blank" title="Discord" class="social-link">
+        <svg viewBox="0 0 640 512"><path d="M524.531 69.836a485.065 485.065 0 0 0-119.69-37.806 1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.298 37.1 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a487.666 487.666 0 0 0 147.59 74.189 1.894 1.894 0 0 0 2.063-.676 348.2 348.2 0 0 0 29.988-48.711 1.81 1.81 0 0 0-1.006-2.486c-16.393-6.227-31.899-13.934-46.847-22.872a1.813 1.813 0 0 1-.185-2.995c3.137-2.36 6.274-4.771 9.26-7.194a1.819 1.819 0 0 1 1.9-.256c98.608 44.812 205.421 44.812 303.307 0a1.82 1.82 0 0 1 1.924.233c2.987 2.423 6.123 4.857 9.261 7.217a1.815 1.815 0 0 1-.162 2.996c-14.948 8.987-30.454 16.621-46.847 22.848a1.817 1.817 0 0 0-1.006 2.51 391.055 391.055 0 0 0 29.988 48.711 1.885 1.885 0 0 0 2.063.676 486.986 486.986 0 0 0 147.59-74.189 2.016 2.016 0 0 0 .765-1.375c10.244-109.664-10.638-220.703-87.428-334.518z"/></svg>
+      </a>
+    </header>
+
+    <main class="glass-panel content-panel scroll-reveal">
+      <h2 class="animated-gradient">Üdv a weboldalamon!</h2>
+      <p class="wip-text">Ez még <span class="blinking-cursor">fejlesztés alatt</span> van 🚀</p>
+    </main>
+
+    <footer class="glass-panel footer-panel scroll-reveal">
+      <p>© 2025 Zsombi11vok</p>
+    </footer>
+  </div>
+
+  <script>
+    // Custom cursor
+    const cursor = document.querySelector('.custom-cursor');
+    const dot = cursor.querySelector('.cursor-dot');
+    const circle = cursor.querySelector('.cursor-circle');
+
+    window.addEventListener('mousemove', e => {
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.scroll-reveal');
+    const onScroll = () => {
+      reveals.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 50) {
+          el.classList.add('is-visible');
+        }
+      });
+    };
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+  </script>
+</body>
+</html>
